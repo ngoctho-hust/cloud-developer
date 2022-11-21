@@ -51,12 +51,13 @@ export class TodosAccess {
                 userId: userId,
                 todoId: todoId
             },
-            UpdateExpression: 'name = :name, dueDate = :dueDate, done = :done',
+            UpdateExpression: 'set #dynamo_name = :name, dueDate = :dueDate, done = :done',
             ExpressionAttributeValues: {
                 ':name': todoUpdate.name,
                 ':dueDate': todoUpdate.dueDate,
                 ':done': todoUpdate.done,
-            }
+            },
+            ExpressionAttributeNames: { "#dynamo_name": "name" }
         }).promise()
         logger.info('update todo result: ' + todoUpdate);
         return todoUpdate
@@ -71,7 +72,7 @@ export class TodosAccess {
                 userId: userId,
                 todoId: todoId
             },
-            UpdateExpression: 'attachmentUrl = :attachmentUrl',
+            UpdateExpression: 'set attachmentUrl = :attachmentUrl',
             ExpressionAttributeValues: {
                 ':attachmentUrl': uploadUrl.split("?")[0]
             }

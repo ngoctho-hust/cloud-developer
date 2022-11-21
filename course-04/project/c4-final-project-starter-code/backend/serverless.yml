@@ -1,5 +1,5 @@
 org: thonn1
-app: serverless-todo-app
+app: serverless-udapeople
 service: serverless-todo-app
 
 plugins:
@@ -7,12 +7,9 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-plugin-tracing
 
-package:
-  individually: true
-
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   lambdaHashingVersion: '20201221'
 
   stage: ${opt:stage, 'dev'}
@@ -27,7 +24,7 @@ provider:
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-c4-todo-images-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: serverless-thonn-todo-images-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
 
   logs:
@@ -152,6 +149,10 @@ functions:
           - s3:*
           - xray:PutTraceSegments 
         Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
 
 resources:
   Resources:
